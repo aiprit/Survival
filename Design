@@ -1,0 +1,21 @@
+Game to build
+
+genre: 2D platform game
+Name: Survival
+Goal : You start off as a small blob amongst a sea of different blob sizes, your goal is to absorb other smaller blobs
+ and grow bigger while also avoiding the bigger ones from absorbing you until you are the biggest/only organism left on the field.
+Basic mechanics: up down left right directions, similar to other games to dodge. May have a pause button.
+Levels : level 1 simple blobs with majority being small
+ 	     level 2 Ratio of smaller to larger units increase. Movements of blobs increase
+		 level 3 You yourself also would slowly decrease in size with time, thus you could come to the point where
+				 you could no longer win the level if you take too long. 
+		 level 4 boss level which is a circle that throws a bunch of circles at you which you may dodge/absorb until you are bigger enough to 
+			     absorb the boss
+Modes: Insane mode with flipped controls for harder difficulty.
+ 	   Infinite mode, you try to stay alive in environment while collecting smaller blobs. 
+ 	   You do not grow, smaller blobs may respawn infinitely while the speed of the blobs slowly increases.
+Cheats: button to automatically increase/decrease size.
+
+Implementation Ideas: blobs would spawn at edge of screen and bounce around randomly. You start in the middle.
+						Use detect intersects then sum the two sizes of blob to make player bigger (maybe a ratio).
+						etc
