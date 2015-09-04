@@ -4,21 +4,15 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 
 
 public class Main extends Application {
-    public static final int SIZEWIDTH = 1028;
-    public static final int SIZEHEIGHT = 720;
-    public static final int FRAMES_PER_SECOND = 60;
-    private static final int MILLISECOND_DELAY = 1000 / FRAMES_PER_SECOND;
-    private static final double SECOND_DELAY = 1.0 / FRAMES_PER_SECOND;
 
+    private int fps = 60;
     private RunGame myGame;
-
 
     /**
      * Set things up at the beginning.
@@ -26,11 +20,13 @@ public class Main extends Application {
     @Override
     public void start (Stage s) {
         // create your own game here
-        myGame = new RunGame();
+ 
+        myGame = new RunGame(s);
         s.setTitle(myGame.getTitle());
-
+        int MILLISECOND_DELAY = 1000 / fps;
+        double SECOND_DELAY = 1.0 / fps;
         // attach game to the stage and display it
-        Scene scene = myGame.init(SIZEWIDTH,SIZEHEIGHT);
+        Scene scene = myGame.startmenu(1028,720);
         s.setScene(scene);
         s.show();
         
@@ -41,6 +37,7 @@ public class Main extends Application {
         animation.setCycleCount(Timeline.INDEFINITE);
         animation.getKeyFrames().add(frame);
         animation.play();
+       
     }
 
     /**
@@ -49,4 +46,6 @@ public class Main extends Application {
     public static void main (String[] args) {
         launch(args);
     }
+
+	
 }
