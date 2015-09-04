@@ -22,7 +22,7 @@ import game_pb111.SpriteMain;
  */
 
 class RunGame {
-	public  final String TITLE = "Survival";
+	public  final String TITLE = "Survival!";
 	private Group root = new Group();
 	private Scene myScene;
 	private Player myPlayer;
@@ -34,7 +34,9 @@ class RunGame {
 	private Boss myBoss;
 	private int time =0;
 	private double speed = 1.0;
-	
+	private int mywidth;
+	private int myheight;
+
 	//Title
 	public String getTitle () {
 
@@ -45,11 +47,13 @@ class RunGame {
 		myStage = s;
 	}
 
-/**
- * startmenu starts the splash menu and init the enter button for new game
- */
+	/**
+	 * startmenu starts the splash menu and init the enter button for new game
+	 */
 	public Scene startmenu(int width,int height){
 		myScene = new Scene(root, width, height, Color.BLACK);
+		mywidth = width;
+		myheight = height;
 		Settitle("Title",2,3);
 		Settitle("start",2,1.5);
 		myScene.setOnKeyPressed(e -> newgame(e.getCode(),level));
@@ -57,13 +61,13 @@ class RunGame {
 		return myScene;
 
 	}
-/**
- * init starts new game on the first level, create mobs,player and set controls
-  * 
-  * @param width size of screen set from main
-  * @param height size of screen set from main
-  * @return
-  */
+	/**
+	 * init starts new game on the first level, create mobs,player and set controls
+	 * 
+	 * @param width size of screen set from main
+	 * @param height size of screen set from main
+	 * @return
+	 */
 	public Scene init (int width, int height) {
 		freeze = false;
 		myScene = new Scene(root, width, height, Color.BLACK);
@@ -74,12 +78,12 @@ class RunGame {
 		return myScene;
 	}
 
-/**starts level 2, similar to init creates boss, player and boss shooter, set controls
- * 
- * @param width size of screen set from main
- * @param height size of screen set from main
- * @return
- */
+	/**starts level 2, similar to init creates boss, player and boss shooter, set controls
+	 * 
+	 * @param width size of screen set from main
+	 * @param height size of screen set from main
+	 * @return
+	 */
 	public Scene initboss (int width, int height) {
 		freeze = false;
 		root = new Group();
@@ -92,10 +96,10 @@ class RunGame {
 		return myScene;
 	}
 
-/**steps through timeline, freezes on player death
- * 
- * @param elapsedTime
- */
+	/**steps through timeline, freezes on player death
+	 * 
+	 * @param elapsedTime
+	 */
 	public void step (double elapsedTime) {
 		time ++;
 
@@ -109,7 +113,7 @@ class RunGame {
 					myBoss.Bossmove(myPlayer);
 					myBoss.collisionBoss(myPlayer);
 					if (time%100 == 0){
-						speed += 0.2;
+						speed += 0.01;
 						generateshots(root, new Random(),speed);
 
 					}
@@ -126,10 +130,10 @@ class RunGame {
 	 */
 	private void generateshots(Group root, Random rnd,double speed ) {
 		Color c = Color.rgb(rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
-		Sprite b = new Sprite((rnd.nextBoolean() ? 70 : 10), c);
+		Sprite b = new Sprite((rnd.nextBoolean() ? 50 : 15), c);
 		Circle circle = b.getCircle();
-		int valX = ((myPlayer.getPlayerImg().getX()-myBoss.getX()>0)? 2:-2);
-		int valY = ((myPlayer.getPlayerImg().getY()-myBoss.getY()>0)? 2:-2);
+		double valX = ((myPlayer.getPlayerImg().getX()-myBoss.getX()>0)? 1.5:-1.5);
+		double valY = ((myPlayer.getPlayerImg().getY()-myBoss.getY()>0)? 1.5:-1.5);
 		double ratioX = ((myPlayer.getPlayerImg().getX()-myBoss.getX())/(myPlayer.getPlayerImg().getY()-myBoss.getY()));
 		double ratioY = 1;
 		if(ratioX>1){
@@ -140,8 +144,8 @@ class RunGame {
 			ratioY = -(1/ratioX);
 			ratioX = 1;
 		}
-		b.speedX = ratioX*valX ;
-		b.speedY = ratioY*valY ;
+		b.speedX = ratioX*valX*speed ;
+		b.speedY = ratioY*valY*speed ;
 		circle.setTranslateX(myBoss.getX());
 		circle.setTranslateY(myBoss.getY());
 		circle.setVisible(true);
@@ -159,10 +163,10 @@ class RunGame {
 			if(myframe == 60){
 				gameover();
 			}
-			else if(myframe%8 ==0)
-				deathanimation(myframe);
-			else
-				myframe++;
+			else if(myframe%8 ==0){
+				myPlayer.deathanimation(myframe,root);
+			}
+			myframe++;
 		}
 		if( level==1){
 			if(manager.getAllSprites().isEmpty())
@@ -173,17 +177,17 @@ class RunGame {
 				if(myframe == 60){
 					wincondition();
 				}
-				else if(myframe%8 ==0)
-					deathboss(myframe);
-				else
-					myframe++;
-			
-					
+				else if(myframe%8 ==0){
+					myBoss.deathboss(myframe, root);
+				}
+				myframe++;
+
+
 			}
 		}
 
 	}
-	
+
 	/**Key set for level 1 game or level 2 game
 	 * 
 	 * @param code
@@ -193,26 +197,26 @@ class RunGame {
 		switch (code) {
 		case ENTER:
 			if(part <3){
-			spritecleanall();
-			root = new Group();
-			level=1;
-			Scene scene = init(1028,720);
-			myframe = 1;
-			myStage.setScene(scene);
-			myStage.show();
-			
+				spritecleanall();
+				root = new Group();
+				level=1;
+				Scene scene = init(mywidth,myheight);
+				myframe = 1;
+				myStage.setScene(scene);
+				myStage.show();
+
 			}
 			break;
 		case SPACE:
 			if (part>1){
-			spritecleanall();
-			root = new Group();
-			level = 2;
-			Scene scene2 = initboss(1028,720); 
-			myframe = 1;
-			myStage.setScene(scene2);
-			myStage.show();
-			
+				spritecleanall();
+				root = new Group();
+				level = 2;
+				Scene scene2 = initboss(mywidth,myheight); 
+				myframe = 1;
+				myStage.setScene(scene2);
+				myStage.show();
+
 			}
 			break;
 		default:
@@ -238,12 +242,13 @@ class RunGame {
 	 * 
 	 */
 	private void wincondition() {
+		freeze =true;
 		Settitle("wingame",2,3);
 		Settitle("playagain",2,1.5);
 		Settitle("spacetorestart",2,1.2);
 		myScene.setOnKeyPressed(e -> newgame(e.getCode(),2));
 	}
-	
+
 	/**set splashes + key on win level 1
 	 * 
 	 */
@@ -255,7 +260,7 @@ class RunGame {
 		myScene.setOnKeyPressed(e -> newgame(e.getCode(),2));
 
 	}
-	
+
 	/**set splashes + key on lose both levels
 	 * 
 	 */
@@ -268,7 +273,7 @@ class RunGame {
 		myScene.setOnKeyPressed(e -> newgame(e.getCode(),level));
 
 	}
-	
+
 	/**Sprite wipe with each scene
 	 * 
 	 */
@@ -280,7 +285,7 @@ class RunGame {
 		manager.cleanupSprites();
 
 	}
-	
+
 	/**handle Sprite death on collisions
 	 * 
 	 */
@@ -295,32 +300,9 @@ class RunGame {
 
 	}
 
-	/**death player animation
-	 * 
-	 * @param frame
-	 */
-	private void deathanimation(int frame) {
-		ImageView deadframe = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream("Deathanimation"+frame/8+".png")));
-		root.getChildren().remove(myPlayer.getPlayerImg());
-		myPlayer.setImage(deadframe);
-		root.getChildren().add(myPlayer.getPlayerImg());
-		myframe++;
 
-	}
 	
-	/**death Boss animation
-	 * 
-	 * @param frame
-	 */
-	private void deathboss(int frame) {
-		ImageView deadframe1 = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream("Deathboss"+frame/8+".png")));
-		root.getChildren().remove(myBoss.getBoss());
-		myBoss.setBoss(deadframe1,150-frame*3);
-		root.getChildren().add(myBoss.getBoss());
-		myframe++;
 
-	}
-	
 	/**update collision sprite vs player/wall
 	 * 
 	 */
@@ -341,7 +323,7 @@ class RunGame {
 	 * @param level	difficulty (not implemented)
 	 * @param root
 	 */
-	 
+
 	private void generatemob(int nummob, int level,Group root){
 		Random rnd = new Random();
 		int S = 10;

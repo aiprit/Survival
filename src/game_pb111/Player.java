@@ -1,16 +1,17 @@
 package game_pb111;
 
 
-/**
- * Player with collision/movement and details on the unit
- * 
- * @author Parit Burintrathikul
- */
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 
+/**
+ * Player with collision/movement and details on the unit
+ * 
+ * @author Parit Burintrathikul
+ */
 public class Player {
 	ImageView myPlayerimg;
 	private double myPlayerspeedY = 0;
@@ -33,17 +34,7 @@ public class Player {
 		myPlayerimg.setY(20);
 	}
 
-	/**
-	 * Change player image
-	 * @param newImage
-	 */
-	public void setImage(ImageView newImage){
-		double X = myPlayerimg.getX();
-		double Y = myPlayerimg.getY();
-		myPlayerimg = newImage;
-		myPlayerimg.setX(X);
-		myPlayerimg.setY(Y);
-	}
+
 	/**
 	 * getter
 	 * @return
@@ -197,5 +188,21 @@ public class Player {
 			myPlayerimg.setY(0);
 	}
 	
+	/**death player animation
+	 * 
+	 * @param frame
+	 */
+	public void deathanimation(int frame,Group root) {
+		ImageView deadframe = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream("Deathanimation"+frame/8+".png")));
+		root.getChildren().remove(myPlayerimg);
+		double X = myPlayerimg.getX();
+		double Y = myPlayerimg.getY();
+		myPlayerimg = deadframe;
+		myPlayerimg.setX(X);
+		myPlayerimg.setY(Y);
+		root.getChildren().add(myPlayerimg);
+
+	}
+
 
 }

@@ -17,6 +17,7 @@ public class Boss {
 	private double BossspeedY;;
 	private double BossspeedX;
 	private boolean BossisDead = false;
+	private int mysize = 0;
 	
 	/**
 	 * constructor
@@ -27,6 +28,7 @@ public class Boss {
 	 */
 	public void generateboss(Group root,int width, int height, int size){
 		myBoss = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream("gooboss.png")));
+		mysize = size;
 		myBoss.setFitHeight(size);
 		myBoss.setPreserveRatio(true);		
 		myBoss.setX(width  - myBoss.getBoundsInParent().getWidth() / 2);
@@ -65,6 +67,24 @@ public class Boss {
 		}
 	}
 	
+	/**death Boss animation
+	 * 
+	 * @param frame
+	 */
+	public void deathboss(int frame, Group root) {
+		ImageView deadframe1 = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream("Deathboss"+frame/8+".png")));
+		root.getChildren().remove(myBoss);
+		double X = myBoss.getX();
+		double Y = myBoss.getY();
+		myBoss = deadframe1;
+		myBoss.setFitHeight(mysize-frame*3);
+		myBoss.setPreserveRatio(true);
+		myBoss.setX(X);
+		myBoss.setY(Y);
+		root.getChildren().add(myBoss);
+
+	}
+	
 	/**getter
 	 * 
 	 * @return
@@ -95,21 +115,6 @@ public class Boss {
 	 */
 	public ImageView getBoss(){
 		return myBoss;
-	}
-	
-	/**setter
-	 * 
-	 * @param image
-	 * @param size
-	 */
-	public void setBoss(ImageView image,int size){
-		double X = myBoss.getX();
-		double Y = myBoss.getY();
-		myBoss = image;
-		myBoss.setFitHeight(size);
-		myBoss.setPreserveRatio(true);
-		myBoss.setX(X);
-		myBoss.setY(Y);
 	}
 	
 

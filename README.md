@@ -15,17 +15,17 @@ Main class file: Main
 
 Data (non Java) files needed: all the images in images folder
 
-How to play the game: WASD for controls, There are 2 levels. Main mechanics involved moving around and eating smaller things while avoiding the bigger ones. 2nd level is a boss which throws things at you. Dodge and eat as appropriate.
+How to play the game: WASD for controls, There are 2 levels. Main mechanics involved moving around and eating smaller things while avoiding the bigger ones.You grow in size as you eat. 2nd level is a boss which throws things at you. Dodge and eat as appropriate. 
 
 Keys/Mouse input: WSAD Space Enter - +
 
 Cheat Keys: - reduce size
 			+ increase size
 
-Known bugs:	as far as I'm concerned fixed all the bugs that I noticed.
+Known bugs:	as far as I'm concerned fixed all the bugs that I noticed. Note that the hitboxes are squares on the sprites, I didn't have the time to blank out the background so collisions that look unlikely could still happen
 
 Extra features:
 
-Impressions/Suggestions:  Took a while to get the hang of using javafx. Was fun and would have done more if not for time constraint. I believe there's a few redundant code that could still be changed.
+Impressions/Suggestions:  Took a while to get the hang of using javafx. Was fun and would have done more if not for time constraint. I believe there's a few redundant code that could still be changed/refactored.
 
 Credits: cooltext.com for Wordart splashes and http://www.spriters-resource.com/download/24662/, http://www.spriters-resource.com/download/2668/ for player and boss sprites.
