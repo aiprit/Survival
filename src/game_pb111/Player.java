@@ -9,17 +9,17 @@ public class Player {
 	ImageView myPlayerimg;
 	private double myPlayerspeedY = 0;
 	private double myPlayerspeedX = 0;
-	private boolean isDead = false;
+	private boolean isDead;
 	private double myY;
 	private double myX;
-	
+
 	
 	public Player(double size, int width, int height){
 		Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("gooplayer.gif"));
+		isDead = false;
 		myPlayerimg = new ImageView(image1);
 		myPlayerimg.setFitHeight(size);
 		myPlayerimg.setPreserveRatio(true);
-		myPlayerimg.setSmooth(true);
 		myPlayerimg.setX(width / 2 - myPlayerimg.getBoundsInLocal().getWidth() / 2);
 		myPlayerimg.setY(height / 2 - myPlayerimg.getBoundsInLocal().getHeight() / 2);
 	}
@@ -48,7 +48,7 @@ public class Player {
 	}
 
 	//What to do each time a key is pressed
-	public void handleKeyInput (KeyCode code, double value) {
+	public void handleKeyInput (KeyCode code, double value,Scene myScene) {
 		switch (code) {
 		case RIGHT:
 			myPlayerspeedX=myPlayerspeedX + value;
@@ -79,6 +79,18 @@ public class Player {
 			else if (myPlayerspeedX>0)
 				myPlayerspeedX=myPlayerspeedX - value/2 ;
 			break;
+		case EQUALS:
+			myPlayerimg.setFitHeight(myPlayerimg.getFitHeight()+10);
+			myPlayerimg.setPreserveRatio(true);
+			myPlayerimg.setSmooth(true);
+			checkoverwallexpand(myScene);
+			break;
+		case MINUS:
+			myPlayerimg.setFitHeight(myPlayerimg.getFitHeight()-10);
+			myPlayerimg.setPreserveRatio(true);
+			myPlayerimg.setSmooth(true);
+			break;
+			
 		default:
 			// do nothing
 		}
@@ -99,22 +111,38 @@ public class Player {
 		myPlayerimg.setX(X);
 		myX = X;
 	}
-	public void collisionPlayer(Sprite sprite) {
+	
+	public void collisionPlayer(Sprite sprite,Scene myScene) {
 		if (sprite.getCircle().getBoundsInParent().intersects(myPlayerimg.getBoundsInParent())) {
-			if(myPlayerimg.getFitHeight() > sprite.getCircle().getBoundsInLocal().getHeight()){
+			if(myPlayerimg.getFitHeight() > sprite.getCircle().getBoundsInLocal().getHeight()*0.8){
 				myPlayerimg.setFitHeight(myPlayerimg.getFitHeight()+sprite.getCircle().getBoundsInLocal().getHeight()/4);
 				myPlayerimg.setPreserveRatio(true);
 				myPlayerimg.setSmooth(true);
+				checkoverwallexpand(myScene);
 				sprite.setlife(true); 
 			}
 			else{
 				isDead = true;
+				
 			}
-
-
 		}
 	}
+	
+private void checkoverwallexpand(Scene myScene) {
+	double a = myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth();
+	double b = myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight();
+	if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()>myScene.getWidth())
+		myPlayerimg.setX(myScene.getWidth()-myPlayerimg.getBoundsInLocal().getWidth());
+	if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()>myScene.getHeight())
+		myPlayerimg.setY(myScene.getHeight()-myPlayerimg.getBoundsInLocal().getHeight());
+	if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()<0)
+		myPlayerimg.setX(0);
+	if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()<0)
+		myPlayerimg.setY(0);
+	}
 
-
+public void makedead(boolean bol){
+	isDead = bol;
+}
 	
 }

@@ -1,11 +1,10 @@
 package game_pb111;
-import java.util.List;
 
-import javafx.geometry.Point2D;
+
+
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+
 import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
@@ -25,7 +24,7 @@ public class Sprite {
     public boolean isDead = false;
 
     public Circle collisionBounds;
-
+    
     public Sprite(double size, Color circlecolor){
     	myCircle = new Circle(size,circlecolor);
 
@@ -34,7 +33,7 @@ public class Sprite {
     public void update() {
     	 myCircle.setTranslateX(myCircle.getTranslateX() + speedX);
     	 myCircle.setTranslateY(myCircle.getTranslateY() + speedY);
-      
+  
     }
 
     /**
