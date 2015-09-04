@@ -9,38 +9,43 @@ import javafx.scene.shape.Circle;
 import javafx.scene.paint.Color;
 
 
+/**
+ * Class to store mob units
+ * 
+ * @author Parit Burintrathikul
+ */
+
 public class Sprite {
 	
   
 	public Circle myCircle;
-	
-	
     public Node node;
-
     public double speedX = 0;
-
     public double speedY = 0;
-
     public boolean isDead = false;
-
     public Circle collisionBounds;
     
+    /**constructor
+     * 
+     * @param size
+     * @param circlecolor
+     */
     public Sprite(double size, Color circlecolor){
     	myCircle = new Circle(size,circlecolor);
 
 	}
- 
+    /**update circle position
+     * 
+     */
     public void update() {
     	 myCircle.setTranslateX(myCircle.getTranslateX() + speedX);
     	 myCircle.setTranslateY(myCircle.getTranslateY() + speedY);
   
     }
 
-    /**
-     * Did this sprite collide into the other sprite?
-     *
-     * @param other - The other sprite.
-     * @return boolean - Whether this or the other sprite collided, otherwise false.
+    /**collision wall check for circles
+     * 
+     * @param myScene
      */
     public void collisionwall(Scene myScene) {
     	if(myCircle.getTranslateX() > myScene.getWidth()- myCircle.getBoundsInLocal().getWidth()/2)
@@ -52,22 +57,28 @@ public class Sprite {
 		if(myCircle.getTranslateY() < myCircle.getBoundsInLocal().getHeight()/2)
 			speedY = -1*speedY;
     }
+    
+    /**getter
+     * 
+     * @return
+     */
     public Circle getCircle(){
     	return myCircle;
     }
-//    public void handleDeath(RunGame RunGame) {
-//        RunGame.getSpriteManager().addSpritesToBeRemoved(this);
-//    }
 
-	
-
-
+    /**setter
+     * 
+     * @param life
+     */
 	public void setlife(boolean life) {
 		isDead = life;
 	}
-
+	
+	/**getter
+	 * 
+	 * @return
+	 */
 	public boolean getlife() {
-		// TODO Auto-generated method stub
 		return isDead;
 	}
 }

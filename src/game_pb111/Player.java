@@ -1,5 +1,11 @@
 package game_pb111;
 
+
+/**
+ * Player with collision/movement and details on the unit
+ * 
+ * @author Parit Burintrathikul
+ */
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -10,32 +16,77 @@ public class Player {
 	private double myPlayerspeedY = 0;
 	private double myPlayerspeedX = 0;
 	private boolean isDead;
-	private double myY;
-	private double myX;
 
-	
+	/**constructor
+	 * 
+	 * @param size
+	 * @param width
+	 * @param height
+	 */
 	public Player(double size, int width, int height){
 		Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("gooplayer.gif"));
 		isDead = false;
 		myPlayerimg = new ImageView(image1);
 		myPlayerimg.setFitHeight(size);
 		myPlayerimg.setPreserveRatio(true);
-		myPlayerimg.setX(width / 2 - myPlayerimg.getBoundsInLocal().getWidth() / 2);
-		myPlayerimg.setY(height / 2 - myPlayerimg.getBoundsInLocal().getHeight() / 2);
+		myPlayerimg.setX(20);
+		myPlayerimg.setY(20);
 	}
-	
+
+	/**
+	 * Change player image
+	 * @param newImage
+	 */
 	public void setImage(ImageView newImage){
+		double X = myPlayerimg.getX();
+		double Y = myPlayerimg.getY();
 		myPlayerimg = newImage;
-		myPlayerimg.setX(myX);
-		myPlayerimg.setY(myY);
+		myPlayerimg.setX(X);
+		myPlayerimg.setY(Y);
 	}
+	/**
+	 * getter
+	 * @return
+	 */
 	public ImageView getPlayerImg(){
 		return myPlayerimg;
-		
+
 	}
+
+	/**
+	 * getter
+	 * @return
+	 */
 	public boolean checkDead(){
 		return isDead;
 	}
+	
+	/**setter
+	 * 
+	 * @param bol
+	 */
+	public void makedead(boolean bol){
+		isDead = bol;
+	}
+	
+	/**getter
+	 * 
+	 * @return
+	 */
+	public double PlayergetY(){
+		return myPlayerspeedY;
+	}
+	/**getter
+	 * 
+	 * @return
+	 */
+	public double PlayergetX(){
+		return myPlayerspeedX;
+	}
+	/**
+	 * Player check collision on wall
+	 * @param myScene
+	 */
 	public void Playercollisionwall(Scene myScene){
 		if(myPlayerimg.getX() > myScene.getWidth()- myPlayerimg.getBoundsInLocal().getWidth())
 			myPlayerspeedX = -1*myPlayerspeedX;
@@ -47,7 +98,12 @@ public class Player {
 			myPlayerspeedY = -1*myPlayerspeedY;
 	}
 
-	//What to do each time a key is pressed
+	/**
+	 * What to do each time a key is pressed
+	 * @param code
+	 * @param value speed control
+	 * @param myScene
+	 */
 	public void handleKeyInput (KeyCode code, double value,Scene myScene) {
 		switch (code) {
 		case RIGHT:
@@ -90,28 +146,27 @@ public class Player {
 			myPlayerimg.setPreserveRatio(true);
 			myPlayerimg.setSmooth(true);
 			break;
-			
+
 		default:
 			// do nothing
 		}
 	}
-	public double PlayergetY(){
-		return myPlayerspeedY;
-	}
-	public double PlayergetX(){
-		return myPlayerspeedX;
-	}
 
-	public void setY(double Y) {
-		 myPlayerimg.setY(Y);
-		 myY = Y;
-	}
 
-	public void setX(double X) {
-		myPlayerimg.setX(X);
-		myX = X;
+	/**
+	 * player movement with step
+	 * @param myScene
+	 */
+	public void playermovement(Scene myScene) {
+		myPlayerimg.setX(myPlayerimg.getX() + myPlayerspeedX);
+		myPlayerimg.setY(myPlayerimg.getY() + myPlayerspeedY);
+		Playercollisionwall(myScene);
 	}
-	
+	/**collision vs sprites
+	 * 
+	 * @param sprite
+	 * @param myScene
+	 */
 	public void collisionPlayer(Sprite sprite,Scene myScene) {
 		if (sprite.getCircle().getBoundsInParent().intersects(myPlayerimg.getBoundsInParent())) {
 			if(myPlayerimg.getFitHeight() > sprite.getCircle().getBoundsInLocal().getHeight()*0.8){
@@ -123,26 +178,24 @@ public class Player {
 			}
 			else{
 				isDead = true;
-				
+
 			}
 		}
 	}
-	
-private void checkoverwallexpand(Scene myScene) {
-	double a = myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth();
-	double b = myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight();
-	if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()>myScene.getWidth())
-		myPlayerimg.setX(myScene.getWidth()-myPlayerimg.getBoundsInLocal().getWidth());
-	if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()>myScene.getHeight())
-		myPlayerimg.setY(myScene.getHeight()-myPlayerimg.getBoundsInLocal().getHeight());
-	if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()<0)
-		myPlayerimg.setX(0);
-	if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()<0)
-		myPlayerimg.setY(0);
+	/**check wall clipping
+	 * 
+	 * @param myScene
+	 */
+	private void checkoverwallexpand(Scene myScene) {
+		if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()>myScene.getWidth())
+			myPlayerimg.setX(myScene.getWidth()-myPlayerimg.getBoundsInLocal().getWidth());
+		if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()>myScene.getHeight())
+			myPlayerimg.setY(myScene.getHeight()-myPlayerimg.getBoundsInLocal().getHeight());
+		if( myPlayerimg.getX()+myPlayerimg.getBoundsInLocal().getWidth()<0)
+			myPlayerimg.setX(0);
+		if( myPlayerimg.getY()+myPlayerimg.getBoundsInLocal().getHeight()<0)
+			myPlayerimg.setY(0);
 	}
-
-public void makedead(boolean bol){
-	isDead = bol;
-}
 	
+
 }

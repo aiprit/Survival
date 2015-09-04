@@ -1,5 +1,7 @@
 package game_pb111;
 
+
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
@@ -7,7 +9,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-
+/**
+ * Main class to run and initialize application
+ * 
+ * @author Parit Burintrathikul
+ */
 
 public class Main extends Application {
 
