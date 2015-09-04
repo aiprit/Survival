@@ -1,16 +1,17 @@
 package game_pb111;
-import java.util.List;
+
 import java.util.Random;
+
 
 import javafx.scene.Group;
 import javafx.scene.Scene;
+
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-
+import javafx.stage.Stage;
 import game_pb111.Sprite;
 import game_pb111.SpriteMain;
 
@@ -18,81 +19,208 @@ import game_pb111.SpriteMain;
 
 class RunGame {
 	public  final String TITLE = "Survival";
-
-
 	private Group root = new Group();
 	private Scene myScene;
 	private Player myPlayer;
 	private int myframe = 1 ;
 	private SpriteMain manager = new SpriteMain();
-
-
-	/**
-	 * Returns name of the game.
-	 */
+	private Stage myStage;
+	private boolean level1 = true;
+	private boolean freeze = false;
+	private Boss myBoss = new Boss();
+	private int time =0;
+	private double speed = 1.0;
 	public String getTitle () {
+
 		return TITLE;
 	}
 
-	/**
-	 * Create the game's scene
-	 */
-	public Scene init (int width, int height) {
+	public RunGame(Stage s){
+		myStage = s;
+	}
 
+
+	public Scene startmenu(int width,int height){
 		myScene = new Scene(root, width, height, Color.BLACK);
+		Settitle("Title",2,3);
+		Settitle("start",2,1.5);
+		myScene.setOnKeyPressed(e -> newgame(e.getCode(),0.5));
+		freeze = true;
+		return myScene;
 
+	}
+	public Scene init (int width, int height) {
+		freeze = false;
+		myScene = new Scene(root, width, height, Color.BLACK);
 		myPlayer = new Player(30,width,height);
-
 		root.getChildren().add(myPlayer.getPlayerImg());
 		generatemob(30,1,root);
-		// Respond to input
-		 myScene.setOnKeyPressed(e -> myPlayer.handleKeyInput(e.getCode(),0.5));
+		myScene.setOnKeyPressed(e -> myPlayer.handleKeyInput(e.getCode(),0.5,myScene));
+		return myScene;
+	}
+
+
+	public Scene initboss (int width, int height) {
+		freeze = false;
+		root = new Group();
+		myScene = new Scene(root, width, height, Color.BLACK);
+		myPlayer = new Player(30,width,height);
+		root.getChildren().add(myPlayer.getPlayerImg());
+		myBoss.generateboss(root,width,height, 150);
+		myScene.setOnKeyPressed(e -> myPlayer.handleKeyInput(e.getCode(),0.5,myScene));
 		return myScene;
 	}
 
 
 
 
-	/**
-	 * Change properties of shapes to animate them
-	 * 
-	 * Note, there are more sophisticated ways to animate shapes,
-	 * but these simple ways work too.
-	 */
+
+
+
+
 	public void step (double elapsedTime) {
+		time ++;
 
+		if (!freeze){
+			playermovement();
+			updateSprites();
+			handledeath();
+			gamecondition();
+			if(!level1){
+				if(!myBoss.Bossdead()){
+					myBoss.Bossmove(myPlayer);
+					myBoss.collisionBoss(myPlayer);
+					if (time%100 == 0){
+						speed += 0.2;
+						generateshots(root, new Random(),speed);
 
+					}
+				}
+			}
+		}
+	}
+
+	private void generateshots(Group root, Random rnd,double speed ) {
+		Color c = Color.rgb(rnd.nextInt(255), rnd.nextInt(255), rnd.nextInt(255));
+		Sprite b = new Sprite((rnd.nextBoolean() ? 70 : 10), c);
+		Circle circle = b.getCircle();
+		int valX = ((myPlayer.getPlayerImg().getX()-myBoss.getX()>0)? 2:-2);
+		int valY = ((myPlayer.getPlayerImg().getY()-myBoss.getY()>0)? 2:-2);
+		double ratioX = ((myPlayer.getPlayerImg().getX()-myBoss.getX())/(myPlayer.getPlayerImg().getY()-myBoss.getY()));
+		double ratioY = 1;
+		if(ratioX>1){
+			ratioY = (1/ratioX);
+			ratioX = 1;
+		}
+		if(ratioX<1){
+			ratioY = -(1/ratioX);
+			ratioX = 1;
+		}
+		b.speedX = ratioX*valX ;
+		b.speedY = ratioY*valY ;
+		circle.setTranslateX(myBoss.getX());
+		circle.setTranslateY(myBoss.getY());
+		circle.setVisible(true);
+		circle.setId(b.toString());
+		manager.addSprites(b);
+		root.getChildren().add(circle);
+	}
+
+	private void playermovement() {
 		myPlayer.setX(myPlayer.getPlayerImg().getX() + myPlayer.PlayergetX());
 		myPlayer.setY(myPlayer.getPlayerImg().getY() + myPlayer.PlayergetY());
 		myPlayer.Playercollisionwall(myScene);
-		updateSprites(elapsedTime);
-		handledeath();
-		gamecondition();
-
-
 	}
-	private void gameover() {
-	
 
-	}
 	private void gamecondition(){
+
 		if(myPlayer.checkDead()){
-			if(myframe == 70)
+			if(myframe == 70){
 				gameover();
+			}
 			else if(myframe%10 ==0)
 				deathanimation(myframe);
 			else
 				myframe++;
 		}
-		if(manager.getAllSprites().isEmpty())
-			wincondition();
-		
+		if( level1){
+			if(manager.getAllSprites().isEmpty())
+				nextlevelblock();
+		}
+		if(!level1){
+			if(myBoss.Bossdead()){
+				myBoss.deathanimation(root);
+				wincondition();
+			}
+		}
+
 	}
-	private void wincondition() {
-		// TODO Auto-generated method stub
-		
+	private void nextlevelblock() {
+		freeze = true;
+		Settitle("completed1",2,3);
+		Settitle("continue",2,1.5);
+		myScene.setOnKeyPressed(e -> nextlevel(e.getCode(),0.5));
+
 	}
 
+	private void nextlevel(KeyCode code, double d) {
+		switch (code) {
+		case SPACE:
+			spritecleanall();
+			level1 = false;
+			root = new Group();
+			Scene scene2 = initboss(1028,720); 
+			myStage.setScene(scene2);
+			myStage.show();
+			break;
+		default:
+			break;
+		}
+	}
+	private void gameover() {
+		freeze = true;
+	
+		Settitle("gameover",2,3);
+		Settitle("tryagain",2,1.5);
+		myScene.setOnKeyPressed(e -> newgame(e.getCode(),0.5));
+
+	}
+	private void newgame(KeyCode code, double d) {
+		switch (code) {
+		case ENTER:
+			spritecleanall();
+			root = new Group();
+			level1 = true;
+			Scene scene = init(1028,720);
+			myframe = 1;
+			myStage.setScene(scene);
+			myStage.show();
+			break;
+		default:
+			break;
+
+		}
+	}
+
+	private void Settitle(String name,double xval, double yval){
+		ImageView title = new ImageView( new Image(getClass().getClassLoader().getResourceAsStream(name+".png")));
+		title.setX(myScene.getWidth() / xval - title.getBoundsInLocal().getWidth() / 2);
+		title.setY(myScene.getHeight() / yval - title.getBoundsInLocal().getHeight() / 2);
+		root.getChildren().add(title);
+	}
+
+	private void wincondition() {
+		Settitle("wingame",2,3);
+		Settitle("playagain",2,1.5);
+	}
+	private void spritecleanall(){
+		for (Sprite sprite:manager.getAllSprites()){
+			manager.addSpritesToBeRemoved(sprite);
+			root.getChildren().remove(sprite.getCircle());
+		}
+		manager.cleanupSprites();
+
+	}
 	private void handledeath() {
 		for (Sprite sprite:manager.getAllSprites()){
 			if(sprite.getlife()){
@@ -114,12 +242,13 @@ class RunGame {
 
 	}
 
-	private void updateSprites(double time) {
+	private void updateSprites() {
 		for (Sprite sprite:manager.getAllSprites()){
 			sprite.update();
-			sprite.collisionwall( myScene);
-
-			myPlayer.collisionPlayer(sprite);
+			if(level1){
+				sprite.collisionwall( myScene);
+			}
+			myPlayer.collisionPlayer(sprite,myScene);
 
 		}
 	}
@@ -133,9 +262,9 @@ class RunGame {
 		int XL = 70;
 		int XXL = 100;
 		formspheres(nummob/2, root, rnd,S);
-//		formspheres(nummob/4, root, rnd,M);
-//		formspheres(nummob/6, root, rnd,L);
-//		formspheres(nummob/8, root, rnd,XL);
+		formspheres(nummob/4, root, rnd,M);
+		formspheres(nummob/6, root, rnd,L);
+		formspheres(nummob/8, root, rnd,XL);
 		formspheres(1, root, rnd,XXL);
 
 
@@ -150,18 +279,10 @@ class RunGame {
 			// random 0 to 2 + (.0 to 1) * random (1 or -1)
 			b.speedX = (rnd.nextInt(1)* rnd.nextInt(1) + rnd.nextDouble()) * (rnd.nextBoolean() ? 1 : -1);
 			b.speedY = (rnd.nextInt(1)* rnd.nextInt(1) + rnd.nextDouble()) * (rnd.nextBoolean() ? 1 : -1);
-
-			// random x between 0 to width of scene
 			double newX = rnd.nextInt((int) myScene.getWidth());
-
-			// check for the right of the width newX is greater than width 
-			// minus radius times 2(width of sprite)
 			if (newX > (myScene.getWidth() - (circle.getRadius() * 2))) {
 				newX = myScene.getWidth() - (circle.getRadius()  * 2);
 			}
-
-			// check for the bottom of screen the height newY is greater than height 
-			// minus radius times 2(height of sprite)
 			double newY = rnd.nextInt((int) myScene.getHeight());
 			if (newY > (myScene.getHeight() - (circle.getRadius() * 2))) {
 				newY = myScene.getHeight() - (circle.getRadius() * 2);
