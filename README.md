@@ -27,3 +27,5 @@ Known bugs:	as far as I'm concerned fixed all the bugs that I noticed.
 Extra features:
 
 Impressions/Suggestions:  Took a while to get the hang of using javafx. Was fun and would have done more if not for time constraint. I believe there's a few redundant code that could still be changed.
+
+Credits: cooltext.com for Wordart splashes and http://www.spriters-resource.com/download/24662/, http://www.spriters-resource.com/download/2668/ for player and boss sprites.
