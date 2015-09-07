@@ -1,3 +1,6 @@
+// This entire file is part of my masterpiece.
+// Parit Burintrathikul
+
 package game_pb111;
 
 import javafx.scene.Group;
