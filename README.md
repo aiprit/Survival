@@ -1,28 +1,19 @@
 # game
-First project for CompSci 308 Fall 2015
+First project for CompSci 308: Software Design Fall 2015
 
 Name: Parit Burintrathikul
 
 Date started: 27/8/15
-
 Date finished: 4/9/15
-
 Hours worked: approx 15 hours
-
 Resources used: tutorials on 308 website and stackoverflow and oracle docs
-
 Main class file: Main
-
 Data (non Java) files needed: all the images in images folder
-
 How to play the game: WASD for controls, There are 2 levels. Main mechanics involved moving around and eating smaller things while avoiding the bigger ones.You grow in size as you eat. 2nd level is a boss which throws things at you. Dodge and eat as appropriate. 
-
 Keys/Mouse input: WSAD Space Enter - +
-
 Cheat Keys: - reduce size
 			+ increase size
-
-Known bugs:	as far as I'm concerned fixed all the bugs that I noticed. Note that the hitboxes are squares on the sprites, I didn't have the time to blank out the background so collisions that look unlikely could still happen
+Known bugs:	as far as I'm concerned fixed all the bugs that I noticed. Note that the hitboxes are squares on the sprites, no full box
 
 Extra features:
 
